@@ -3346,9 +3346,7 @@ function showStamp(caseName, callback) {
     overlay.classList.add('show');
     // 最初の1.5秒はクリック無効（誤タップ防止）
     overlay.style.pointerEvents = 'none';
-    setTimeout(() => { if (overlay.classList.contains('s
-
-  how')) overlay.style.pointerEvents = 'auto'; }, 1500);
+    setTimeout(() => { if (overlay.classList.contains('show')) overlay.style.pointerEvents = 'auto'; }, 1500);
   }
 }
 
