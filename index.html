@@ -3347,3 +3347,24 @@ function showStamp(caseName, callback) {
     // 最初の1.5秒はクリック無効（誤タップ防止）
     overlay.style.pointerEvents = 'none';
     setTimeout(() => { if (overlay.classList.contains('s
+
+  how')) overlay.style.pointerEvents = 'auto'; }, 1500);
+  }
+}
+
+function closeStamp() {
+  const overlay = document.getElementById('stamp-overlay');
+  if (!overlay) return;
+  if (overlay.style.pointerEvents === 'none') return;
+  if (_stampAutoClose) { clearTimeout(_stampAutoClose); _stampAutoClose = null; }
+  overlay.classList.remove('show');
+  overlay.style.pointerEvents = '';
+  if (_stampCallback) {
+    const cb = _stampCallback;
+    _stampCallback = null;
+    cb();
+  }
+}
+</script>
+</body>
+</html>
