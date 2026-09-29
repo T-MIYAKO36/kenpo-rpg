@@ -5,10 +5,10 @@ window.AudioFX=(()=>{
   bgm.volume=.18;
   let enabled=localStorage.getItem('noriko-v4-sound')!=='off';
   let unlocked=false;
+  let context=null;
   const sources={
     click:'se-select.mp3',
     correct:'se-jajean2.mp3',
-    wrong:'se-jajean.mp3',
     reward:'se-stamp.mp3',
     unlock:'se-mystery.mp3',
     clear:'se-title.mp3'
@@ -17,7 +17,12 @@ window.AudioFX=(()=>{
   const cache=Object.fromEntries(Object.entries(sources).map(([name,src])=>{
     const audio=new Audio(src);audio.preload='none';return[name,audio];
   }));
-  function unlock(){unlocked=true;bgm.load();Object.values(cache).forEach(audio=>audio.load());if(enabled)bgm.play().catch(()=>{})}
+  function unlock(){
+    unlocked=true;
+    if(!context)context=new (window.AudioContext||window.webkitAudioContext)();
+    if(context.state==='suspended')context.resume();
+    bgm.load();Object.values(cache).forEach(audio=>audio.load());if(enabled)bgm.play().catch(()=>{});
+  }
   function setMode(mode){bgm.volume=mode==='tension'?.21:mode==='mystery'?.16:.18}
   function setEnabled(value){
     enabled=Boolean(value);localStorage.setItem('noriko-v4-sound',enabled?'on':'off');
@@ -26,8 +31,16 @@ window.AudioFX=(()=>{
   }
   function play(name){
     if(!enabled||!unlocked)return;
+    if(name==='wrong')return softWrong();
     const base=cache[name]||cache.click;
     const audio=base.cloneNode();audio.volume=volume[name]||.35;audio.play().catch(()=>{});
+  }
+  function softWrong(){
+    if(!context)return;
+    const oscillator=context.createOscillator(),gain=context.createGain(),start=context.currentTime;
+    oscillator.type='sine';oscillator.frequency.setValueAtTime(220,start);oscillator.frequency.exponentialRampToValueAtTime(165,start+.2);
+    gain.gain.setValueAtTime(.0001,start);gain.gain.exponentialRampToValueAtTime(.035,start+.012);gain.gain.exponentialRampToValueAtTime(.0001,start+.24);
+    oscillator.connect(gain);gain.connect(context.destination);oscillator.start(start);oscillator.stop(start+.25);
   }
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden)bgm.pause();else if(enabled&&unlocked)bgm.play().catch(()=>{});

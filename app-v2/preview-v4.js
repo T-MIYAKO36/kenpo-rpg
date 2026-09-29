@@ -37,7 +37,15 @@ function renderGrowth(){
 }
 function panel(html){screen.innerHTML=`<section class="panel">${html}</section>`}
 function work(html){screen.innerHTML=`<section class="work-panel">${html}</section>`}
-function setView(view,title){stage.dataset.view=view;document.querySelector('#screenTitle').textContent=title;client.hidden=!/^case[1-6]$/.test(view);AudioFX.setMode(view==='map'?'calm':view==='training'?'puzzle':view==='graduation'?'tension':'mystery')}
+function setView(view,title){stage.dataset.view=view;document.querySelector('.preview-shell').classList.toggle('title-mode',view==='title');document.querySelector('#screenTitle').textContent=title;client.hidden=!/^case[1-6]$/.test(view);AudioFX.setMode(['map','title'].includes(view)?'calm':view==='training'?'puzzle':view==='graduation'?'tension':'mystery')}
+
+function showTitle(){
+  setView('title','人権事件調査室');renderGrowth();
+  const hasProgress=state.cleared.length||state.current||state.training.length;
+  panel(`<p class="eyebrow">HUMAN RIGHTS CASE FILE</p><h1>法子とけんぽうくん</h1><h2>人権事件調査室</h2><p>身近な事件を調査して、人権を人のために使える調査員を目指そう。</p><button id="enterGame" class="primary">${hasProgress?'調査を続ける':'調査を始める'}</button><small class="title-note">6つの事件｜見習い訓練｜卒業試験</small>`);
+  say('けんぽうくん',hasProgress?'調査記録は残っているよ。続きから始めよう！':'最初の事件は、好きなものから選べるよ！');
+  document.querySelector('#enterGame').onclick=showMap;
+}
 
 function showMap(){
   setView('map','人権事件調査室');renderGrowth();
@@ -200,4 +208,4 @@ soundButton.onclick=()=>{AudioFX.unlock();AudioFX.setEnabled(!AudioFX.enabled);r
 document.addEventListener('pointerdown',()=>AudioFX.unlock(),{once:true});
 document.addEventListener('click',event=>{const button=event.target.closest('button');if(!button)return;setTimeout(()=>AudioFX.play(button.classList.contains('correct')?'correct':button.classList.contains('wrong')?'wrong':'click'),0)});
 renderSound();
-renderGrowth();showMap();
+renderGrowth();showTitle();
