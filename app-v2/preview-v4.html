@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>法子とけんぽうくん V2｜人権事件調査室</title>
+  <link rel="stylesheet" href="preview-v4.css">
+</head>
+<body>
+  <main class="preview-shell">
+    <header class="topbar">
+      <button id="mapButton" class="top-button">事件一覧</button>
+      <div class="title"><small>人権事件調査アドベンチャー</small><strong id="screenTitle">人権事件調査室</strong></div>
+      <div class="top-actions">
+        <button id="soundButton" class="top-button" aria-pressed="true">音 ON</button>
+        <button id="resetButton" class="top-button">進行を最初から</button>
+      </div>
+    </header>
+    <section class="growth" aria-label="法子の成長段階">
+      <div class="growth-line"></div>
+      <div id="growthSteps" class="growth-steps"></div>
+      <div id="norikoMarker" class="noriko-marker"><img src="../images/noriko.webp" alt="現在地の法子"></div>
+    </section>
+    <section id="stage" class="stage" data-view="map">
+      <div class="backdrop"></div>
+      <img class="character noriko" src="../images/noriko.webp" alt="法子">
+      <img id="client" class="character client" src="../images/sadako.webp" alt="依頼人" hidden>
+      <img class="character kenpo" src="../images/kenpoukun.webp" alt="けんぽうくん">
+      <section id="screen" class="screen"></section>
+    </section>
+    <footer class="dialogue"><b id="speaker">けんぽうくん</b><p id="message">すき間時間でも、好きな事件から調査できるよ！</p></footer>
+  </main>
+  <script src="questions.js"></script>
+  <script src="training-data.js"></script>
+  <script src="audio-v4.js"></script>
+  <script src="preview-v4.js"></script>
+</body>
+</html>
