@@ -136,7 +136,7 @@ function showTurnout(){
 }
 function showCase1Result(){
   const wasNew=!state.cleared.includes(1);if(wasNew)state.cleared.push(1);state.current=null;save();renderGrowth();
-  panel(`<p class="stamp">事件解決</p><h2>一票が消えた朝</h2>${progress(5)}<p>情報を比較し、自分の判断を一票として示す。それが国民主権を具体的にする行動です。</p><p class="feedback">調査完了。事件一覧へ戻り、次に取り組む事件を選ぼう。</p><div class="screen-actions"><button id="map" class="primary">事件一覧へ戻る</button><button id="again" class="secondary">この事件をもう一度調査</button></div>`,'result');
+  panel(`<div class="result-scroll"><p class="stamp">事件解決</p><h2>一票が消えた朝</h2>${progress(5)}<p>情報を比較し、自分の判断を一票として示す。それが国民主権を具体的にする行動です。</p><p class="feedback">調査完了。事件一覧へ戻り、次に取り組む事件を選ぼう。</p></div><div class="screen-actions"><button id="map" class="primary">事件一覧へ戻る</button><button id="again" class="secondary">この事件をもう一度調査</button></div>`,'result result-layout');
   say('さだ子','私たちが政治の主役だったのね。次は政策を比べて、自分で決めるわ！');document.querySelector('#map').onclick=showMap;document.querySelector('#again').onclick=startCase1;if(wasNew&&[2,4,6].includes(state.cleared.length))showRankPop();else AudioFX.play('clear');
 }
 
@@ -198,7 +198,7 @@ function renderGenericJudgment(){
 }
 function renderGenericResult(){
   const d=V4_CASE_DETAILS[run.id],wasNew=!state.cleared.includes(run.id);if(wasNew)state.cleared.push(run.id);state.current=null;save();renderGrowth();
-  panel(`<p class="stamp">事件解決</p><h2>${d.title}</h2>${progress(5)}<p>${d.record}</p><p class="rank-label">現在：${RANKS[rankIndex()].name}</p><p class="feedback">調査完了。事件一覧へ戻り、次に取り組む事件を選ぼう。</p><div class="screen-actions"><button id="map" class="primary">事件一覧へ戻る</button><button id="again" class="secondary">この事件を再調査</button></div>`,'result');say(d.client,d.ending);document.querySelector('#map').onclick=showMap;document.querySelector('#again').onclick=()=>startCase(run.id);if(wasNew&&[2,4,6].includes(state.cleared.length))showRankPop();else AudioFX.play('clear');
+  panel(`<div class="result-scroll"><p class="stamp">事件解決</p><h2>${d.title}</h2>${progress(5)}<p>${d.record}</p><p class="rank-label">現在：${RANKS[rankIndex()].name}</p><p class="feedback">調査完了。事件一覧へ戻り、次に取り組む事件を選ぼう。</p></div><div class="screen-actions"><button id="map" class="primary">事件一覧へ戻る</button><button id="again" class="secondary">この事件を再調査</button></div>`,'result result-layout');say(d.client,d.ending);document.querySelector('#map').onclick=showMap;document.querySelector('#again').onclick=()=>startCase(run.id);if(wasNew&&[2,4,6].includes(state.cleared.length))showRankPop();else AudioFX.play('clear');
 }
 function showRankPop(){AudioFX.play('reward');const pop=document.createElement('div');pop.className='rank-pop';pop.innerHTML=`RANK UP<b>${RANKS[rankIndex()].name}</b>`;document.querySelector('.preview-shell').append(pop);setTimeout(()=>pop.remove(),2100)}
 
