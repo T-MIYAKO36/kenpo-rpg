@@ -5,25 +5,31 @@ window.AudioFX=(()=>{
   bgm.volume=.18;
   let enabled=localStorage.getItem('noriko-v4-sound')!=='off';
   let unlocked=false;
+  let loaded=false;
+  let ducked=false;
   let context=null;
+  let lastPlayAt=0;
   const sources={
     click:'se-select.mp3',
     correct:'se-jajean2.mp3',
     reward:'se-stamp.mp3',
     unlock:'se-mystery.mp3',
-    clear:'se-title.mp3'
+    clear:'se-title.mp3',arrival:'se-mystery.mp3',fileOpen:'se-jajean2.mp3',stamp:'se-stamp.mp3'
   };
-  const volume={click:.34,correct:.45,wrong:.34,reward:.48,unlock:.38,clear:.44};
+  const volume={click:.28,correct:.42,wrong:.34,reward:.46,unlock:.36,clear:.44,arrival:.32,fileOpen:.4,stamp:.42};
   const cache=Object.fromEntries(Object.entries(sources).map(([name,src])=>{
     const audio=new Audio(src);audio.preload='none';return[name,audio];
   }));
   function unlock(){
+    if(unlocked){if(enabled&&bgm.paused)bgm.play().catch(()=>{});return}
     unlocked=true;
     if(!context)context=new (window.AudioContext||window.webkitAudioContext)();
     if(context.state==='suspended')context.resume();
-    bgm.load();Object.values(cache).forEach(audio=>audio.load());if(enabled)bgm.play().catch(()=>{});
+    if(!loaded){bgm.load();Object.values(cache).forEach(audio=>audio.load());loaded=true}
+    if(enabled&&bgm.paused)bgm.play().catch(()=>{});
   }
-  function setMode(mode){bgm.volume=mode==='tension'?.21:mode==='mystery'?.16:.18}
+  function setMode(mode){if(ducked)return;bgm.volume=mode==='tension'?.21:mode==='mystery'?.16:.18}
+  function setDuck(value){ducked=Boolean(value);bgm.volume=ducked?.07:.18}
   function setEnabled(value){
     enabled=Boolean(value);localStorage.setItem('noriko-v4-sound',enabled?'on':'off');
     if(!enabled)bgm.pause();else if(unlocked)bgm.play().catch(()=>{});
@@ -31,6 +37,9 @@ window.AudioFX=(()=>{
   }
   function play(name){
     if(!enabled||!unlocked)return;
+    const now=performance.now();
+    if(name==='click'&&now-lastPlayAt<120)return;
+    lastPlayAt=now;
     if(name==='wrong')return softWrong();
     const base=cache[name]||cache.click;
     const audio=base.cloneNode();audio.volume=volume[name]||.35;audio.play().catch(()=>{});
@@ -45,5 +54,5 @@ window.AudioFX=(()=>{
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden)bgm.pause();else if(enabled&&unlocked)bgm.play().catch(()=>{});
   });
-  return{unlock,setMode,setEnabled,play,get enabled(){return enabled}};
+  return{unlock,setMode,setDuck,setEnabled,play,get enabled(){return enabled}};
 })();
