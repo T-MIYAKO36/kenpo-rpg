@@ -127,7 +127,7 @@ function showKnowledge(){
 }
 function showPolicy(){
   const p=CASE1_STORY.policies[case1.policy],options=[p.correct,...p.wrong].sort(()=>Math.random()-.5);
-  work(`<p class="eyebrow">現場調査｜政策を比べる ${case1.policy+1}/2</p>${progress(3)}<h2>さだ子さんの関心</h2><p class="feedback">${p.concern}</p><div class="policy-grid">${options.map(x=>`<button class="choice" data-policy="${x}">${x}</button>`).join('')}</div>`,'investigation investigation-1');
+  work(`<p class="eyebrow">現場調査｜政策を比べる ${case1.policy+1}/2</p>${progress(3)}<h2>さだ子さんの関心</h2><p id="feedback" class="feedback">${p.concern}</p><div class="policy-grid">${options.map(x=>`<button class="choice" data-policy="${x}">${x}</button>`).join('')}</div>`,'investigation investigation-1');
   screen.querySelectorAll('[data-policy]').forEach(b=>b.onclick=()=>{if(b.dataset.policy===p.correct){b.classList.add('correct');case1.policy++;if(case1.policy>=2)case1.phase='turnout';saveCase1();say('法子','名前や雰囲気ではなく、暮らしと政策のつながりを比べられた！');awaitNext(case1.policy<2?'次の政策比較へ':'投票結果を調査',()=>case1.policy<2?showPolicy():showTurnout())}else{b.classList.add('wrong');say('けんぽうくん','関心と政策に共通する目的を探そう。')}});
 }
 function showTurnout(){
@@ -136,13 +136,13 @@ function showTurnout(){
 }
 function showCase1Result(){
   const wasNew=!state.cleared.includes(1);if(wasNew)state.cleared.push(1);state.current=null;save();renderGrowth();
-  panel(`<p class="stamp">事件解決</p><h2>一票が消えた朝</h2>${progress(5)}<p>情報を比較し、自分の判断を一票として示す。それが国民主権を具体的にする行動です。</p><div class="screen-actions"><button id="map" class="primary">事件一覧へ</button><button id="again" class="secondary">もう一度調査</button></div>`,'result');
+  panel(`<p class="stamp">事件解決</p><h2>一票が消えた朝</h2>${progress(5)}<p>情報を比較し、自分の判断を一票として示す。それが国民主権を具体的にする行動です。</p><p class="feedback">調査完了。事件一覧へ戻り、次に取り組む事件を選ぼう。</p><div class="screen-actions"><button id="map" class="primary">事件一覧へ戻る</button><button id="again" class="secondary">この事件をもう一度調査</button></div>`,'result');
   say('さだ子','私たちが政治の主役だったのね。次は政策を比べて、自分で決めるわ！');document.querySelector('#map').onclick=showMap;document.querySelector('#again').onclick=startCase1;if(wasNew&&[2,4,6].includes(state.cleared.length))showRankPop();else AudioFX.play('clear');
 }
 
 function shuffle(items){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function esc(text){return String(text).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]))}
-function awaitNext(label,callback){screen.querySelectorAll('button.choice,button.clue-button,button.key-button').forEach(b=>b.disabled=true);const feedback=document.querySelector('#feedback');const next=document.createElement('button');next.className='primary learning-next';next.textContent=label;next.onclick=callback;(feedback||screen).insertAdjacentElement('afterend',next)}
+function awaitNext(label,callback){screen.querySelectorAll('button.choice,button.clue-button,button.key-button').forEach(b=>b.disabled=true);const feedback=document.querySelector('#feedback');const next=document.createElement('button');next.className='primary learning-next';next.textContent=label;next.onclick=callback;if(feedback)feedback.insertAdjacentElement('afterend',next);else screen.append(next)}
 function startCase(id){if(id===1)return startCase1();const pool=QUESTION_BANK[String(id)];const preferred=pool.filter(q=>['知識','意味'].includes(q.type));const unseen=preferred.filter(q=>!state.seen.includes(q.id));const selected=shuffle(unseen.length>=2?unseen:preferred).slice(0,2);run={mode:'case',id,phase:'arrival',dialogue:0,questions:selected.map(q=>q.id),qIndex:0,activity:{step:0,found:[],sequence:[]},evidence:[]};checkpoint();renderGenericCase()}
 function resumeCurrent(){run=JSON.parse(JSON.stringify(state.current));if(run.mode==='case1'){case1=run.case1;if(case1.phase==='arrival')showCaseArrival(1,()=>{case1.phase='intro';saveCase1();showCase1Intro()});else{setView('case1','CASE 01｜一票が消えた朝');if(case1.phase==='intro')showCase1Intro();else if(case1.phase==='knowledge')showKnowledge();else if(case1.phase==='policy')showPolicy();else showTurnout()}}else if(run.mode==='case')renderGenericCase();else if(run.mode==='special')renderSpecial();else if(run.mode==='graduation')renderGraduation();else if(run.mode==='trainingHistory')renderHistory();else if(run.mode==='trainingDesign')(run.phase==='principles'?renderPrinciples:renderConstitution)()}
 function getQuestion(id){return Object.values(QUESTION_BANK).flat().find(q=>q.id===id)}
@@ -198,7 +198,7 @@ function renderGenericJudgment(){
 }
 function renderGenericResult(){
   const d=V4_CASE_DETAILS[run.id],wasNew=!state.cleared.includes(run.id);if(wasNew)state.cleared.push(run.id);state.current=null;save();renderGrowth();
-  panel(`<p class="stamp">事件解決</p><h2>${d.title}</h2>${progress(5)}<p>${d.record}</p><p class="rank-label">現在：${RANKS[rankIndex()].name}</p><div class="screen-actions"><button id="map" class="primary">事件一覧へ</button><button id="again" class="secondary">条件を変えて再調査</button></div>`,'result');say(d.client,d.ending);document.querySelector('#map').onclick=showMap;document.querySelector('#again').onclick=()=>startCase(run.id);if(wasNew&&[2,4,6].includes(state.cleared.length))showRankPop();else AudioFX.play('clear');
+  panel(`<p class="stamp">事件解決</p><h2>${d.title}</h2>${progress(5)}<p>${d.record}</p><p class="rank-label">現在：${RANKS[rankIndex()].name}</p><p class="feedback">調査完了。事件一覧へ戻り、次に取り組む事件を選ぼう。</p><div class="screen-actions"><button id="map" class="primary">事件一覧へ戻る</button><button id="again" class="secondary">この事件を再調査</button></div>`,'result');say(d.client,d.ending);document.querySelector('#map').onclick=showMap;document.querySelector('#again').onclick=()=>startCase(run.id);if(wasNew&&[2,4,6].includes(state.cleared.length))showRankPop();else AudioFX.play('clear');
 }
 function showRankPop(){AudioFX.play('reward');const pop=document.createElement('div');pop.className='rank-pop';pop.innerHTML=`RANK UP<b>${RANKS[rankIndex()].name}</b>`;document.querySelector('.preview-shell').append(pop);setTimeout(()=>pop.remove(),2100)}
 
