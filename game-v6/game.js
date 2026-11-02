@@ -8,8 +8,8 @@ seOn=true;let bgmOn=saved.soundPrefs?.bgm!==false,bgmRetry=false;
 function rememberSound(){saved.soundPrefs={bgm:bgmOn,se:seOn};try{localStorage.setItem(STORE,JSON.stringify(saved))}catch(e){}}
 function refreshSoundButtons(){$('audio').textContent='BGM '+(bgmOn?'ON':'OFF');$('audio').setAttribute('aria-pressed',String(bgmOn));}
 const mainBgmSource=$('bgm').getAttribute('src');let activeBgmTrack='main',bgmRequest=0;
-function setBgmTrack(track){if(activeBgmTrack===track)return;activeBgmTrack=track;bgmRequest++;const a=$('bgm');a.pause();a.src=track==='exam'?JOURNEY.music.exam:mainBgmSource;bgmRetry=false;if(bgmOn)beginBgm()}
-async function beginBgm(){if(!bgmOn)return;const request=++bgmRequest,a=$('bgm');a.volume=activeBgmTrack==='exam'?.20:.25;try{await a.play();if(request!==bgmRequest)return;bgmRetry=false;refreshSoundButtons()}catch(e){if(request===bgmRequest&&bgmOn&&e.name!=='AbortError'){bgmRetry=true;$('audio').textContent='BGM ON（タップで再生）'}}}
+function setBgmTrack(track){if(activeBgmTrack===track)return;activeBgmTrack=track;bgmRequest++;const a=$('bgm');a.pause();a.src=track==='exam'?JOURNEY.music.exam:track==='article'?ARTICLE_GAME.music:mainBgmSource;bgmRetry=false;if(bgmOn)beginBgm()}
+async function beginBgm(){if(!bgmOn)return;const request=++bgmRequest,a=$('bgm');a.volume=activeBgmTrack==='article'?.17:activeBgmTrack==='exam'?.20:.25;try{await a.play();if(request!==bgmRequest)return;bgmRetry=false;refreshSoundButtons()}catch(e){if(request===bgmRequest&&bgmOn&&e.name!=='AbortError'){bgmRetry=true;$('audio').textContent='BGM ON（タップで再生）'}}}
 
 
 function shuffle(items){const out=items.slice();for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]]}return out}
