@@ -16,3 +16,5 @@
 
 /* Keep BGM controls reachable above the title and stage selector. */
 header{z-index:20}
+
+#test-notice{position:absolute;right:24px;top:82px;z-index:21;background:#503b20ed;border:1px solid #d8bc7d;border-radius:6px;padding:5px 12px;font-size:13px;pointer-events:none}.test-tools{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}.test-tools button{font-size:14px!important;min-height:44px;background:#254d60!important}@media(max-width:700px){#test-notice{top:74px;font-size:11px;right:12px}.test-tools button{font-size:12px!important}header span{font-size:11px}header{gap:4px;padding:7px}header button{padding:6px}}
