@@ -18,3 +18,5 @@
 header{z-index:20}
 
 #test-notice{position:absolute;right:24px;top:82px;z-index:21;background:#503b20ed;border:1px solid #d8bc7d;border-radius:6px;padding:5px 12px;font-size:13px;pointer-events:none}.test-tools{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}.test-tools button{font-size:14px!important;min-height:44px;background:#254d60!important}@media(max-width:700px){#test-notice{top:74px;font-size:11px;right:12px}.test-tools button{font-size:12px!important}header span{font-size:11px}header{gap:4px;padding:7px}header button{padding:6px}}
+
+.test-applied{font-size:14px;max-width:90%}.test-applied summary{cursor:pointer;padding:8px}.test-applied button{font-size:13px!important;margin:4px}.test-tools{max-width:900px}#start:has(.test-tools){overflow:auto;justify-content:flex-start;padding-top:110px;gap:10px}#start.title-page:has(.test-tools){padding-top:90px}#start:has(.test-tools) h1{margin:5px}.title-page:has(.test-tools) .title-cast{height:140px;min-height:140px}
