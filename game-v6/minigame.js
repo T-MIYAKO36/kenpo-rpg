@@ -36,7 +36,7 @@ function applyArticleText(state,text){
 }
 function articleBestKey(){return run.mode==='hard'?'articleHardBest':'articleBest'}
 function articleWeakKey(mode){return mode==='hard'?'articleHardWeak':'articleWeak'}
-function articleUnlocked(){return TEST_MODE||(saved.finalPassed&&CASES.every(x=>saved.cleared[x.id]))}
+function articleUnlocked(){return saved.finalPassed&&CASES.every(x=>saved.cleared[x.id])}
 function clearArticleView(){$('article-screen')?.remove();$('word-shot')?.remove();$('game').classList.remove('article-game')}
 function addArticleEntry(container){
   const b=document.createElement('button');b.className='article-entry';b.textContent=articleUnlocked()?'卒業後｜条文シューティング':'条文シューティング｜卒業テスト合格で開放';b.disabled=!articleUnlocked();b.onclick=()=>startArticle();container.append(b);

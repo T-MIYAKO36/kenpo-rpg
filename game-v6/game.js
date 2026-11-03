@@ -1,6 +1,7 @@
 'use strict';
-const TEST_MODE=new URLSearchParams(location.search).get('test')==='1';
-const $=id=>document.getElementById(id),STORE=TEST_MODE?'kenpo-story-test-v1':'kenpo-story-trial-v3';
+// Older teacher-preview links open the student edition without changing saved progress.
+const entryURL=new URL(location.href);if(entryURL.searchParams.has('test')){entryURL.searchParams.delete('test');history.replaceState(null,'',entryURL.pathname+entryURL.search+entryURL.hash)}
+const $=id=>document.getElementById(id),STORE='kenpo-story-trial-v3';
 let saved={runs:{},cleared:{}};try{const v=JSON.parse(localStorage.getItem(STORE)||'null');if(v&&v.runs&&v.cleared)saved=v}catch(e){}
 let c=CASES[0],run=null,motion=!matchMedia('(prefers-reduced-motion: reduce)').matches,old=false,seOn=true,ac=null,soundNodes=[];
 const names={n:'法子',k:'けんぽうくん',s:''};
